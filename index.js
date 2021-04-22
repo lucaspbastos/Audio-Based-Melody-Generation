@@ -6,7 +6,6 @@ const port = process.env.PORT || 3000;
 
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/index.html'));
-    res.end();
 });
 
 app.get('/callScript', function(req, res) {
