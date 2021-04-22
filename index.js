@@ -1,10 +1,9 @@
 const express = require('express');
 const app = express();
 const path = require('path');
-const port = process.env.PORT || 3000;
 
-app.get('/', function(req, res) {
-    res.sendFile(path.join(__dirname + '/index.html'));
+var port = process.env['PORT'] = process.env.PORT || 4000;
+
+http.createServer(app).listen(port, function() {
+    console.log("Express server listening with http on port %d in %s mode", this.address().port, app.settings.env);
 });
-
-app.listen(port, () => console.log(`Listening on port http://localhost:${port}!`));
