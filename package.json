@@ -2,7 +2,7 @@
   "name": "random-midi-generator",
   "version": "0.1.0",
   "description": "Random Midi Generator Project",
-  "main": "src/server/server.js",
+  "main": "index.js",
   "dependencies": {
     "bytes": "^3.1.0",
     "array-flatten": "^1.1.1",
@@ -57,7 +57,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
