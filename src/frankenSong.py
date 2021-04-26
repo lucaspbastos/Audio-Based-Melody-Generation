@@ -1,28 +1,55 @@
+'''
+Takes folder of wav files as input and outputs clean midi melody to folder
+
+Command line args:
+1. Audio folder path
+2. (Optional) Midi folder path
+
+Requires spleeter by deezer to be installed!!!
+https://github.com/deezer/spleeter
+
+Requires audio2midi.py to be in same directory!!!
+edited https://github.com/tiagoft/audio_to_midi/blob/master/audio2midi.py
+'''
+
 import os
+import sys
 import time
 import audio2midi
 import librosa
+import pypianoroll
 
-audioPath = "audio/test.wav"
-vocalPath = "output/test/vocals.wav"
-midiPath = "midi/melody/vocalMelody.mid"
-quantizedPath = "midi/melody/vocalMelodyQuantized.mid"
+arguments = len(sys.argv)
+if arguments == 1:
+    print("Command line arg missing: audio folder path, then midi folder path")
+    sys.exit()
+elif arguments > 1:
+    audioFolder = sys.argv[1]
+    if arguments == 3:
+        midiPath = sys.argv[2]
+    else:
+        try:
+            os.mkdir(os.getcwd()+'/MIDI')
+            midiPath = 'MIDI'
+        except OSError as error:
+            print(error)
+        print("Command line arg missing: midi path, creating MIDI directory if one doesn't exist")
 
-y, sr = librosa.load(audioPath)
-BPM = librosa.beat.tempo(y, sr)
+# testAudioFolder = "TestAudio"
+audioPathList = []
+vocalPathFolder = "stems"
 
-spleeterCommand = f"spleeter separate -p spleeter:2stems -o output {audioPath}"
-quantizeCommand = f"midiquantize {midiPath} {quantizedPath} 1/8 {BPM}"
-quantizeBuildCommand = "make src/*.cpp src/midi/*.cpp -o midiquantize"
+
+for fileName in os.listdir(audioFolder):
+    audioPathList.append(f"{audioFolder}/{fileName}")
+    spleeterCommand = f"spleeter separate -o {vocalPathFolder} {' '.join(audioPathList)}"
 
 os.system(spleeterCommand)
 
-while(not os.path.exists(vocalPath)):
-    time.sleep(3)
-    print("Waiting for spleeter...")
+if not os.path.exists(vocalPathFolder):
+    print("spleeter failed")
 
-audio2midi.run(vocalPath, midiPath)
-
-
-os.system(quantizeBuildCommand)
-os.system(quantizeCommand)
+for fileName in os.listdir(vocalPathFolder):
+    midiFile = f"{midiPath}/{fileName}.mid"
+    vocalFile = f"{vocalPathFolder}/{fileName}/vocals.wav"
+    audio2midi.run(vocalFile, midiFile)
