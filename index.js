@@ -2,7 +2,8 @@ const express = require('express');
 const fs = require('fs');
 const formidable = require('formidable');
 const serveIndex = require('serve-index');
-
+const spawn = require("child_process").spawn;
+const pythonProcess = spawn('python',["src/frankenSong.py", "uploads", "outputs/mixedTrack.wav"]);
 
 const app = express();
 const path = require('path');
@@ -24,11 +25,23 @@ app.post('/callScript', function(req, res) {
     const form = new formidable.IncomingForm();
 
     form.parse(req, function(err, fields, files) {
-        var oldpath = files.file.path;
-        var newpath = 'uploads/' + files.file.name;
-        fs.copyFile(oldpath, newpath, function (err) {
+        // Copy the files from temp folder to uploads/
+        fs.copyFile(files.file1.path, 'uploads/' + files.file1.name, function (err) {
             if (err) throw err;
-            res.render(__dirname + '/index.html', {filepath:newpath});
+        });
+        fs.copyFile(files.file2.path, 'uploads/' + files.file2.name, function (err) {
+            if (err) throw err;
+        });
+        fs.copyFile(files.file3.path, 'uploads/' + files.file3.name, function (err) {
+            if (err) throw err;
+        });
+        fs.copyFile(files.file4.path, 'uploads/' + files.file4.name, function (err) {
+            if (err) throw err;
+        });
+
+        // Call Python script
+        pythonProcess.stdout.on('data', (data) => {
+            res.render(__dirname + '/play.html', {filepath:'outputs/mixedTrack.wav'});
         });
     });
 });
