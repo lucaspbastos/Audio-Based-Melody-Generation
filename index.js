@@ -3,7 +3,7 @@ const fs = require('fs');
 const formidable = require('formidable');
 const serveIndex = require('serve-index');
 const spawn = require("child_process").spawn;
-const pythonProcess = spawn('python',["src/frankenSong.py", "uploads", "outputs/mixedTrack.wav"]);
+const pythonProcess = spawn('python',["src/main.py", "uploads"]);
 
 const app = express();
 const path = require('path');
@@ -41,7 +41,7 @@ app.post('/callScript', function(req, res) {
 
         // Call Python script
         pythonProcess.stdout.on('data', (data) => {
-            res.render(__dirname + '/play.html', {filepath:'outputs/mixedTrack.wav'});
+            res.render(__dirname + '/play.html', {filepath:'outputs/mixedTrack.midi'});
         });
     });
 });
