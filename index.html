@@ -18,14 +18,16 @@
                 progressColor: 'purple',
                 container: '#waveform'
             });
+            console.log('<%= filepath %>')
+            if ('<%= filepath %>') {
+                document.getElementById("pause").addEventListener("click", press);
 
-            document.getElementById("pause").addEventListener("click", press);
+                wavesurfer.load('<%= filepath %>');
 
-            wavesurfer.load("uploads/CantinaBand60.wav");
-
-            wavesurfer.on('ready', function () {
-                wavesurfer.play();
-            });
+                wavesurfer.on('ready', function () {
+                    wavesurfer.play();
+                });
+            }
             function press() {
                 if (wavesurfer.isPlaying()) {
                     document.getElementById("pause").textContent = "Play";
