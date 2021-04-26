@@ -18,7 +18,8 @@ import time
 import audio2midi
 import librosa
 import pypianoroll
-
+# from pitchEstimation import a2m
+midiPath = 'MIDI'
 arguments = len(sys.argv)
 if arguments == 1:
     print("Command line arg missing: audio folder path, then midi folder path")
@@ -30,7 +31,6 @@ elif arguments > 1:
     else:
         try:
             os.mkdir(os.getcwd()+'/MIDI')
-            midiPath = 'MIDI'
         except OSError as error:
             print(error)
         print("Command line arg missing: midi path, creating MIDI directory if one doesn't exist")
