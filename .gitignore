@@ -129,4 +129,6 @@ dmypy.json
 .pyre/
 
 node_modules/
+uploads/*
+output/*
 .DS_Store
