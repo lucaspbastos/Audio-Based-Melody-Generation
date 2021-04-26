@@ -6,8 +6,8 @@ const app = express();
 const path = require('path');
 const port = process.env.PORT || 3000;
 
-if (!fs.existsSync('./uploads/')){
-    fs.mkdirSync('./uploads/');
+if (!fs.existsSync('uploads/')){
+    fs.mkdirSync('uploads/');
 }
 
 app.get('/', function(req, res) {
