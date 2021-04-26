@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
 """
 Audio-to-MIDI converter using librosa
-
-
+Edited (states_to_pianoroll) by Aaron to detect key using music21 Library
+Then lock notes to stay in a major/minor mode.
 """
 import numpy as np
 import librosa
 import midiutil
 import sys
+from music21 import *
+
+majorScale = [0,2,4,5,7,9,11]
+keyList = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B']
 
 def transition_matrix(note_min, note_max, p_stay_note, p_stay_silence):
     """
@@ -167,8 +171,34 @@ def states_to_pianoroll(states, note_min, note_max, hop_time):
     midi_min = librosa.note_to_midi(note_min)
     midi_max = librosa.note_to_midi(note_max)
 
-    states_ = np.hstack( (states, np.zeros(1)))
+    keyStream = stream.Stream()
 
+    for i in range(len(states)):
+        if int(states[i]%2) != 0:
+            midiNote = ((states[i]-1)/2)+midi_min
+            noteName = note.Note(midiNote).nameWithOctave
+            streamNote = note.Note(nameWithOctave=noteName)
+            keyStream.append(streamNote)
+
+    p = analysis.discrete.KrumhanslSchmuckler()
+    KEY = p.getSolution(keyStream)
+    KEY = KEY.asKey('major')
+
+    print("Key: ")
+    print(str(KEY))
+    keyString = str(KEY)
+    if keyString[1] == '#':
+        keyString = keyString[:2]
+    else:
+        keyString = keyString[0]
+
+    scaleCheckTranspose = keyList.index(keyString)+12
+    print(scaleCheckTranspose+12)
+
+
+    states_ = np.hstack( (states, np.zeros(1)))
+    print("States: ")
+    print(states_)
     # possible types of states
     silence = 0
     onset = 1
@@ -184,8 +214,20 @@ def states_to_pianoroll(states, note_min, note_max, hop_time):
         if my_state == silence:
             if int(states_[i]%2) != 0:
                 # Found an onset!
+                # Check if in key:
+                inKey = False
+                midiNoteNumber = ((states_[i]-1)/2)+midi_min
+                for step in majorScale:
+                    if (midiNoteNumber)%12 == (step+scaleCheckTranspose)%12:
+                        inKey = True
+                if not inKey:
+                    if states_[i]>states_[i-1]:
+                        midiNoteNumber-=1
+                    else:
+                        midiNoteNumber+=1
+                    continue
                 last_onset = i * hop_time
-                last_midi = ((states_[i]-1)/2)+midi_min
+                last_midi = midiNoteNumber
                 last_note = librosa.midi_to_note(last_midi)
                 my_state = onset
 
@@ -204,7 +246,21 @@ def states_to_pianoroll(states, note_min, note_max, hop_time):
 
                 # Start new note
                 last_onset = i * hop_time
-                last_midi = ((states_[i]-1)/2)+midi_min
+
+
+                inKey = False
+                midiNoteNumber = ((states_[i]-1)/2)+midi_min
+                for step in majorScale:
+                    if (midiNoteNumber)%12 == (step+scaleCheckTranspose)%12:
+                        inKey = True
+
+                if not inKey:
+                    if states_[i]>states_[i-1]:
+                        midiNoteNumber-=1
+                    else:
+                        midiNoteNumber+=1
+
+                last_midi = midiNoteNumber
                 last_note = librosa.midi_to_note(last_midi)
                 my_state = onset
 
