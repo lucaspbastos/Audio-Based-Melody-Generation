@@ -1,41 +1,106 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
-    </head>
-    <body>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="/">Audio Based Melody Generation Using MusicVAE</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarText">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="/">Info</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">GitHub</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">README</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-        <div class="container">
-            <form action="./callScript" method="POST" enctype="multipart/form-data">
-                <div class="mb-3">
-                    <label for="formFileMultiple" class="form-label">Select one or more .wav audio files:</label>
-                    <input class="form-control" type="file" id="formFileMultiple" multiple>
-                </div>
-                <input type="submit" class="btn btn-primary" value="Submit Audio Files">
-            </form>
-        </div>
-        
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>          
-    </body>
+<html>
+<title>Audio Based Melody Generation Using MusicVAE</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<style>
+body {font-family: "Times New Roman", Georgia, Serif;}
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Playfair Display";
+  letter-spacing: 5px;
+}
+</style>
+<body>
+
+<!-- Navbar (sit on top) -->
+<div class="w3-top">
+  <div class="w3-bar w3-white w3-padding w3-card" style="letter-spacing:4px;">
+    <a href="#home" class="w3-bar-item w3-button">Audio Based Melody Generation Using MusicVAE</a>
+    <!-- Right-sided navbar links. Hide them on small screens -->
+    <div class="w3-right w3-hide-small">
+      <a href="#about" class="w3-bar-item w3-button">About</a>
+      <a href="#menu" class="w3-bar-item w3-button">How It Works</a>
+      <a href="#contact" class="w3-bar-item w3-button">Demo</a>
+    </div>
+  </div>
+</div>
+
+<!-- Header -->
+<header class="w3-display-container w3-content w3-wide" style="max-width:1600px;min-width:500px" id="home">
+  <img class="w3-image" src="/w3images/hamburger.jpg" alt="Hamburger Catering" width="1600" height="800">
+  <div class="w3-display-bottomleft w3-padding-large w3-opacity">
+    <h1 class="w3-xxlarge">Le Catering</h1>
+  </div>
+</header>
+
+<!-- Page content -->
+<div class="w3-content" style="max-width:1100px">
+
+  <!-- About Section -->
+  <div class="w3-row w3-padding-64" id="about">
+    <div class="w3-col m6 w3-padding-large w3-hide-small">
+     <img src="/w3images/tablesetting2.jpg" class="w3-round w3-image w3-opacity-min" alt="Table Setting" width="600" height="750">
+    </div>
+
+    <div class="w3-col m6 w3-padding-large">
+      <h1 class="w3-center">Audio Based Melody Generation Using MusicVAE</h1><br>
+      <h5 class="w3-center">By Aaron Basch, Chris Carson, and Lucas Bastos</h5>
+      <p class="w3-large">One of the most frustrating situations that a music producer can run into is a creative block. Whether it just be trying to start a new project or build upon an established idea, a creative block can completely ruin your workflow and affect your inspiration for an extended period of time. This can be even worse for people who make music as their primary source of income. There are plenty of websites, programs, and plug-ins that will randomly generate melodies, but there are few, if any, that can pertain to style and emotions as well as take in an audio input to produce new, but similar, results. By creating this, we give users a more accurate result of what they are looking for than other programs. Also, by giving them MIDI files, they can easily be edited in any DAW so they are not stuck with the melody we provide. Doing this provides the producer with absolute freedom to do whatever they want with the melody. If implemented well, this could be a great tool to help music producers get inspired and get over their creative blocks.
+      </p>
+      <p class="w3-large w3-text-grey w3-hide-medium"></p>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- Menu Section -->
+  <div class="w3-row w3-padding-64" id="menu">
+    <div class="w3-col l6 w3-padding-large">
+      <h1 class="w3-center">How It Works</h1><br>
+      <h2>What You Give Us</h2><br>
+      <h4>Key</h4>
+      <p class="w3-text-grey">Choose the note and major or minor.</p><br>
+
+      <h4>Style</h4>
+      <p class="w3-text-grey">Choose a style of music from a list of selections.</p><br>
+
+      <h4>Time Signature</h4>
+      <p class="w3-text-grey">Choose the time signature for your midi files.</p><br>
+
+      <h4>Range of Notes</h4>
+      <p class="w3-text-grey">A range for the MIDI files to stay in.</p><br>
+
+      <h4>Length</h4>
+      <p class="w3-text-grey">How long your MIDI files will be.</p><br>
+
+      <h4>Emotional Content</h4>
+      <p class="w3-text-grey">The emotional content of the melodies produced.</p><br>
+
+      <h4>Up to 5 Audio Files</h4>
+      <p class="w3-text-grey">You can import up to 5 audio files to produce similar melodies to.</p><br>
+    </div>
+
+    <div class="w3-col l6 w3-padding-large">
+      <img src="/w3images/tablesetting.jpg" class="w3-round w3-image w3-opacity-min" alt="Menu" style="width:100%">
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- Contact Section -->
+  <div class="w3-container w3-padding-64" id="contact">
+    <p>Try Our Demo!</p>
+    <p><iframe src="https://web.njit.edu/~lpb6/midi-generator/" width="100%" height="300%" title="Try Our Demo!"></iframe> </p>
+  </div>
+
+<!-- End page content -->
+</div>
+
+<!-- Footer -->
+<footer class="w3-center w3-light-grey w3-padding-32">
+  <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" title="W3.CSS" target="_blank" class="w3-hover-text-green">w3.css</a></p>
+</footer>
+
+</body>
 </html>
