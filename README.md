@@ -14,10 +14,10 @@ node --version
 If you see version numbers for all of the above, you're ready to move on! If not, you must install what you're missing with your desired method (package manager, web, etc.). Now, clone this repo with git by running ```git clone https://github.com/lucaspbastos/Audio-Based-Melody-Generation.git``` and navigate to the /Audio-Based-Melody-Generation folder. Now you will need to run ```pip3 install -r requirements.txt``` to install the Python dependencies and ```npm i``` to install the Node.js dependencies. 
 
 ### Run the Program 
-- **Command Line**
+- **Command Line**:
 In the base directory, you can run the main.py program by running `python3 src/main.py /INPUT_DIRECTORY [/OUTPUT_DIRECTORY]`, where _INPUT_DIRECTORY_ is a required parameter that specifies the directory containing the .wav files, and _OUTPUT_DIRECTORY_ is an optional parameter specifying the desired output directory for the final audio file. If no output directory is specified, the program defaults to /MIDI, and will create the directory if it does not exist.
 
-- **Web Interface**
+- **Web Interface**:
 In the base directory, you can run `npm start` to start the web application at localhost:3000. You can specify a different port by exporting an environment variable named PORT to your desired port number. For example, in bash you would simply run `PORT=4000` to set the variable into the current shell, or `$PORT=4000` in PowerShell. 
 
 ### Demo without installing
