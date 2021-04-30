@@ -19,17 +19,17 @@
                             <a class="nav-link" href="https://github.com/lucaspbastos/Audio-Based-Melody-Generation">GitHub</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="https://github.com/lucaspbastos/Audio-Based-Melody-Generation/blob/main/README.md">README</a>
+                            <a class="nav-link" href="https://github.com/lucaspbastos/Audio-Based-Melody-Generation#README">README</a>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
         <div class="container">
-            <form action="./callScript" method="POST" enctype="multipart/form-data">
+            <form action="./uploadAndCall" method="POST" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label for="formFileMultiple" class="form-label">Select one or more .wav audio files:</label>
-                    <input class="form-control" type="file" id="formFileMultiple" multiple>
+                    <input class="form-control" type="file" id="formFileMultiple" name="audioFiles" multiple>
                 </div>
                 <input type="submit" class="btn btn-primary" value="Submit Audio Files">
             </form>

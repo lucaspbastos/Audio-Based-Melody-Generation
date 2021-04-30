@@ -1,5 +1,6 @@
 const express = require('express');
 const fs = require('fs');
+const multer = require('multer');
 const formidable = require('formidable');
 const serveIndex = require('serve-index');
 const spawn = require("child_process").spawn;
@@ -14,36 +15,46 @@ if (!fs.existsSync('uploads/')){
     fs.mkdirSync('uploads/');
 }
 
+var storage =   multer.diskStorage({
+    destination: function (req, file, callback) {
+        callback(null, './uploads');
+    },
+    filename: function (req, file, callback) {
+        callback(null, Date.now() + '-' + file.originalname);
+    }
+});
+
+var upload = multer({ 
+    storage : storage, 
+    fileFilter: (req, file, callback) => {
+        if (file.mimetype == "audio/wav") {
+            callback(null, true);
+        } else {
+            callback(null, false);
+            return callback(new Error('Only .wav audio files are supported.'));
+        }
+    }
+}).array('audioFiles',5);
+
 app.use(express.static(__dirname + "/"))
 app.use('/uploads', serveIndex(__dirname + '/uploads'));
-
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/index.html'));
 });
 
-app.post('/callScript', function(req, res) {
-    const form = new formidable.IncomingForm();
-
-    form.parse(req, function(err, fields, files) {
-        // Copy the files from temp folder to uploads/
-        fs.copyFile(files.file1.path, 'uploads/' + files.file1.name, function (err) {
-            if (err) throw err;
+app.post('/uploadAndCall', function(req, res) {
+        upload(req,res,function(err) {
+            console.log(req.body);
+            console.log(req.files);
+            if(err) {
+                return res.end(""+err);
+            }
+            res.end("File is uploaded");
+            pythonProcess.stdout.on('data', (data) => {
+                res.render(__dirname + '/play.html', {filepath:'outputs/mixedTrack.midi'});
+            });
         });
-        fs.copyFile(files.file2.path, 'uploads/' + files.file2.name, function (err) {
-            if (err) throw err;
-        });
-        fs.copyFile(files.file3.path, 'uploads/' + files.file3.name, function (err) {
-            if (err) throw err;
-        });
-        fs.copyFile(files.file4.path, 'uploads/' + files.file4.name, function (err) {
-            if (err) throw err;
-        });
-
-        // Call Python script
-        pythonProcess.stdout.on('data', (data) => {
-            res.render(__dirname + '/play.html', {filepath:'outputs/mixedTrack.midi'});
-        });
-    });
 });
+
 
 app.listen(port, () => console.log(`Listening on port http://localhost:${port}`));
