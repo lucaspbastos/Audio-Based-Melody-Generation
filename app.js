@@ -12,8 +12,11 @@ app.engine('html', require('ejs').renderFile);
 if (!fs.existsSync('uploads/')){
     fs.mkdirSync('uploads/');
 }
+if (!fs.existsSync('outputs/')){
+    fs.mkdirSync('outputs/');
+}
 
-var storage =   multer.diskStorage({
+var storage = multer.diskStorage({
     destination: function (req, file, callback) {
         callback(null, './uploads');
     },
