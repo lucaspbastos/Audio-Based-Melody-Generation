@@ -3,8 +3,6 @@ const fs = require('fs');
 const multer = require('multer');
 const formidable = require('formidable');
 const serveIndex = require('serve-index');
-const spawn = require("child_process").spawn;
-const pythonProcess = spawn('python',["src/main.py", "uploads"]);
 
 const app = express();
 const path = require('path');
@@ -38,23 +36,28 @@ var upload = multer({
 
 app.use(express.static(__dirname + "/"))
 app.use('/uploads', serveIndex(__dirname + '/uploads'));
+app.use('/outputs', serveIndex(__dirname + '/outputs'));
+
+app.get('/info', function(req, res) {
+    res.sendFile(path.join(__dirname + '/web/info.html'));
+});
 app.get('/', function(req, res) {
-    res.sendFile(path.join(__dirname + '/index.html'));
+    res.sendFile(path.join(__dirname + '/web/index.html'));
 });
 
-app.post('/uploadAndCall', function(req, res) {
-        upload(req,res,function(err) {
-            console.log(req.body);
-            console.log(req.files);
-            if(err) {
-                return res.end(""+err);
-            }
-            res.end("File is uploaded");
-            pythonProcess.stdout.on('data', (data) => {
-                res.render(__dirname + '/play.html', {filepath:'outputs/mixedTrack.midi'});
-            });
+app.post('/play', function(req, res) {
+    console.log("Uploading files");
+    upload(req,res,function(err) {
+        if(err) {
+            return res.end(""+err);
+        }
+        const spawn = require("child_process").spawn;
+        const pythonProcess = spawn('python',[__dirname+"/src/test_script.py", "uploads", "outputs"]);
+        pythonProcess.stdout.on('data', (data) => {
+            console.log("Melody mixing complete! File at "+data);
+            res.render(__dirname + '/web/play.html', {filepath:data.toString().replace( /[\r\n]+/gm, "")});
         });
+    });
 });
-
 
 app.listen(port, () => console.log(`Listening on port http://localhost:${port}`));

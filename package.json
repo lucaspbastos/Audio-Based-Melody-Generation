@@ -2,7 +2,7 @@
   "name": "audio-based-melody-generation",
   "version": "0.1.0",
   "description": "Audio Based Melody Generation Web Interface",
-  "main": "index.js",
+  "main": "app.js",
   "dependencies": {
     "accepts": "^1.3.7",
     "array-flatten": "^1.1.1",
@@ -61,7 +61,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node web/index.js"
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
