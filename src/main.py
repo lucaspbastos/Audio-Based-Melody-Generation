@@ -15,7 +15,7 @@ edited https://github.com/tiagoft/audio_to_midi/blob/master/audio2midi.py
 import os
 import sys
 import time
-import audio2midi
+import pitchEstimation
 import librosa
 import pypianoroll
 # from pitchEstimation import a2m
@@ -50,6 +50,7 @@ if not os.path.exists(vocalPathFolder):
     print("spleeter failed")
 
 for fileName in os.listdir(vocalPathFolder):
-    midiFile = f"{midiPath}/{fileName}.mid"
-    vocalFile = f"{vocalPathFolder}/{fileName}/vocals.wav"
-    audio2midi.run(vocalFile, midiFile)
+    if os.path.isdir(os.path.join(vocalPathFolder, fileName)):
+        midiFile = f"{midiPath}/{fileName}.mid"
+        vocalFile = f"{vocalPathFolder}/{fileName}/vocals.wav"
+        pitchEstimation.run(vocalFile, midiFile)
