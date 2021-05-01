@@ -16,6 +16,7 @@ import os
 import sys
 import time
 import pitchEstimation
+import audio2midi
 import librosa
 import pypianoroll
 # from pitchEstimation import a2m
@@ -41,8 +42,9 @@ vocalPathFolder = "stems"
 
 
 for fileName in os.listdir(audioFolder):
-    audioPathList.append(f"{audioFolder}/{fileName}")
-    spleeterCommand = f"spleeter separate -o {vocalPathFolder} {' '.join(audioPathList)}"
+    if fileName[-4:] == '.wav':
+        audioPathList.append(f"{audioFolder}/{fileName}")
+        spleeterCommand = f"spleeter separate -o {vocalPathFolder} {' '.join(audioPathList)}"
 
 os.system(spleeterCommand)
 
@@ -54,3 +56,4 @@ for fileName in os.listdir(vocalPathFolder):
         midiFile = f"{midiPath}/{fileName}.mid"
         vocalFile = f"{vocalPathFolder}/{fileName}/vocals.wav"
         pitchEstimation.run(vocalFile, midiFile)
+        # audio2midi.run(vocalFile, midiFile[:-4]+"a2m.mid")
