@@ -21,7 +21,7 @@ h1, h2, h3, h4, h5, h6 {
     <div class="w3-right w3-hide-small">
       <a href="#about" class="w3-bar-item w3-button">About</a>
       <a href="#menu" class="w3-bar-item w3-button">How It Works</a>
-      <a href="#contact" class="w3-bar-item w3-button">Demo</a>
+      <a href="http://melodygeneration.herokuapp.com/" class="w3-bar-item w3-button">Demo</a>
       <a href="https://github.com/lucaspbastos/Audio-Based-Melody-Generation" class="w3-bar-item w3-button">GitHub</a>
     </div>
   </div>
@@ -62,25 +62,13 @@ h1, h2, h3, h4, h5, h6 {
       <h2>What You Give Us</h2><br>
       <h4>Up to 5 Audio Files</h4>
       <p class="w3-text-grey">You can import up to 5 audio files to produce similar melodies to.</p><br>
-      <h2>And we take care of the rest<h2><br>
+      <h2>And the program takes care of the rest!<h2>
     </div>
-
-    <div class="w3-col l6 w3-padding-large">
-      <img src="/w3images/tablesetting.jpg" class="w3-round w3-image w3-opacity-min" alt="Menu" style="width:100%">
-
-    </div>
-    <p>Because our program is only as good as the input we feed it, a lot of focus was put on the audio-to-pianoroll function. The first attempt at solving this was to find a pre-existing solution and modify it to fit our specifications. After trying out a few programs from GitHub, we found one that seemed to most serve our purpose (https://github.com/tiagoft/audio_to_midi/blob/master/audio2midi.py). This program uses a Hidden Markov Model to predict note probabilities using librosa’s implementation of pYin pitch detection. While this worked well enough, there remained issues that we felt would hinder the effectiveness of the overall program; namely time and pitch. The resulting midi was unconstrained to any discernible time-grid, and pitch values were highly inaccurate. As a result, we decided to design our own audio-to-pianoroll function, which was simpler but much more effective at capturing the essence of the melody, as well as sticking to a predictable time-grid. This method essentially took the most frequent note estimated by a pertained CREPE model for each 1/8 note time division, while making the assumption that pitch estimations with a low average-confidence score are silent sections. This method makes one very important assumption about the audio input; the input start and stop times are the precise moments in which an 8 bar melody begins and ends. We felt this is an appropriate assumption since the program encourages the user to choose a specific segment, and since the melody-mixer model performs best with more “regular” melodies, this method hugely outperforms the known available methods. It should be noted that there was an additional attempt to detect the key of the song and adjust out-of-scale notes, but it was found to corrupt the many song choices users might have that do not fall into standard major/minor modes, so this was abandoned.</p><br>
+  </div>
+  <p>Because our program is only as good as the input we feed it, a lot of focus was put on the audio-to-pianoroll function. The first attempt at solving this was to find a pre-existing solution and modify it to fit our specifications. After trying out a few programs from GitHub, we found one that seemed to most serve our purpose (https://github.com/tiagoft/audio_to_midi/blob/master/audio2midi.py). This program uses a Hidden Markov Model to predict note probabilities using librosa’s implementation of pYin pitch detection. While this worked well enough, there remained issues that we felt would hinder the effectiveness of the overall program; namely time and pitch. The resulting midi was unconstrained to any discernible time-grid, and pitch values were highly inaccurate. As a result, we decided to design our own audio-to-pianoroll function, which was simpler but much more effective at capturing the essence of the melody, as well as sticking to a predictable time-grid. This method essentially took the most frequent note estimated by a pertained CREPE model for each 1/8 note time division, while making the assumption that pitch estimations with a low average-confidence score are silent sections. This method makes one very important assumption about the audio input; the input start and stop times are the precise moments in which an 8 bar melody begins and ends. We felt this is an appropriate assumption since the program encourages the user to choose a specific segment, and since the melody-mixer model performs best with more “regular” melodies, this method hugely outperforms the known available methods. It should be noted that there was an additional attempt to detect the key of the song and adjust out-of-scale notes, but it was found to corrupt the many song choices users might have that do not fall into standard major/minor modes, so this was abandoned.</p><br>
     <p>The melodies are passed as a JSON object to a seperate melody mixer JavaScript file. It is here that the melodies are mixed using MusicVAE and it's Interpolate function. The JSON object is parsed so that it fit's MusicVAE's format. They are then each mixed together one by one using the interpolate function. One of these interpolations is then selected randomly and is written into a MIDI file using JSMidi which is then made for the user to download.</p><br>
     <p>This entire end-to-end program can then optionally be ran through a web interface with a clean and minimalistic user interface. This allows the user to use the program in a much simpler way by avoiding the command line. The web interface is ran using the Express framework and can be quickly deployed to a website or simply a localhost. The inner workings are quite simple, the initial page that a user finds themselves at requests an upload of audio tracks in .wav format to then upload into the system, where in the back end all of the magic happens with our program. In the end, the user will see their new audio track with the option to also download it.</p><br>
-  </div>
-
   <hr>
-
-  <!-- Contact Section -->
-  <div class="w3-container w3-padding-64" id="contact">
-    <p>Try Our Demo!</p>
-    <p><iframe src="" width="100%" height="300%" title="Try Our Demo!"></iframe> </p>
-  </div>
 
 <!-- End page content -->
 </div>
