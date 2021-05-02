@@ -67,3 +67,7 @@ for fileName in os.listdir(vocalPathFolder):
         vocalFile = f"{vocalPathFolder}/{fileName}/vocals.wav"
         pitchEstimation.run(vocalFile, midiFile)
         # audio2midi.run(vocalFile, midiFile[:-4]+"a2m.mid")
+
+melodyMixerFile = "melodyMixer.js"
+melodyJSON = "melodyTimeStamps.json"
+os.system(f"Node {melodyMixerFile} {melodyJSON}")
