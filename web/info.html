@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<title>Audio Based Melody Generation Using MusicVAE</title>
+<title>Audio-Based Melody Generation</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -22,6 +22,7 @@ h1, h2, h3, h4, h5, h6 {
       <a href="#about" class="w3-bar-item w3-button">About</a>
       <a href="#menu" class="w3-bar-item w3-button">How It Works</a>
       <a href="#contact" class="w3-bar-item w3-button">Demo</a>
+      <a href="https://github.com/lucaspbastos/Audio-Based-Melody-Generation" class="w3-bar-item w3-button">GitHub</a>
     </div>
   </div>
 </div>
@@ -62,14 +63,10 @@ h1, h2, h3, h4, h5, h6 {
       <h4>Up to 5 Audio Files</h4>
       <p class="w3-text-grey">You can import up to 5 audio files to produce similar melodies to.</p><br>
       <h2>And we take care of the rest<h2><br>
-      <p>Aaron's paragraph goes here</p><br>
-      <p>The melodies are passed as a JSON object to a seperate melody mixer JavaScript file. It is here that the melodies are mixed using MusicVAE and it's Interpolate function. The JSON object is parsed so that it fit's MusicVAE's format. They are then each mixed together one by one using the interpolate function. One of these interpolations is then selected randomly and is written into a MIDI file using JSMidi which is then made for the user to download.</p><br>
-      <p>Lucas's paragraph goes here</p>
     </div>
-
-    <div class="w3-col l6 w3-padding-large">
-      <img src="/w3images/tablesetting.jpg" class="w3-round w3-image w3-opacity-min" alt="Menu" style="width:100%">
-    </div>
+    <p>Aaron's paragraph goes here</p><br>
+    <p>The melodies are passed as a JSON object to a seperate melody mixer JavaScript file. It is here that the melodies are mixed using MusicVAE and it's Interpolate function. The JSON object is parsed so that it fit's MusicVAE's format. They are then each mixed together one by one using the interpolate function. One of these interpolations is then selected randomly and is written into a MIDI file using JSMidi which is then made for the user to download.</p><br>
+    <p>This entire end-to-end program can then optionally be ran through a web interface with a clean and minimalistic user interface. This allows the user to use the program in a much simpler way by avoiding the command line. The web interface is ran using the Express framework and can be quickly deployed to a website or simply a localhost. The inner workings are quite simple, the initial page that a user finds themselves at requests an upload of audio tracks in .wav format to then upload into the system, where in the back end all of the magic happens with our program. In the end, the user will see their new audio track with the option to also download it.</p>
   </div>
 
   <hr>
@@ -77,7 +74,7 @@ h1, h2, h3, h4, h5, h6 {
   <!-- Contact Section -->
   <div class="w3-container w3-padding-64" id="contact">
     <p>Try Our Demo!</p>
-    <p><iframe src="https://web.njit.edu/~lpb6/midi-generator/" width="100%" height="300%" title="Try Our Demo!"></iframe> </p>
+    <p><iframe src="" width="100%" height="300%" title="Try Our Demo!"></iframe> </p>
   </div>
 
 <!-- End page content -->
