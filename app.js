@@ -3,7 +3,6 @@ const fs = require('fs');
 const multer = require('multer');
 const formidable = require('formidable');
 const serveIndex = require('serve-index');
-
 const app = express();
 const path = require('path');
 const port = process.env.PORT || 3000;
@@ -28,7 +27,7 @@ var storage = multer.diskStorage({
 var upload = multer({ 
     storage : storage, 
     fileFilter: (req, file, callback) => {
-        if (file.mimetype == "audio/wav") {
+        if (file.mimetype == "audio/wav" || file.mimetype == "audio/x-wav" ) {
             callback(null, true);
         } else {
             callback(null, false);
@@ -48,17 +47,17 @@ app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/web/index.html'));
 });
 
-app.post('/play', function(req, res) {
+app.post('/upload', function(req, res) {
     console.log("Uploading files");
     upload(req,res,function(err) {
         if(err) {
             return res.end(""+err);
         }
         const spawn = require("child_process").spawn;
-        const pythonProcess = spawn('python',[__dirname+"/src/test_script.py", "uploads", "outputs"]);
+        const pythonProcess = spawn('python3',["src/test_script.py", "uploads", "outputs"]);
         pythonProcess.stdout.on('data', (data) => {
             console.log("Melody mixing complete! File at "+data);
-            res.render(__dirname + '/web/play.html', {filepath:data.toString().replace( /[\r\n]+/gm, "")});
+            res.render(__dirname + '/web/view.html', {filepath:data.toString().replace( /[\r\n]+/gm, "")});
         });
     });
 });
