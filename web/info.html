@@ -46,7 +46,7 @@ h1, h2, h3, h4, h5, h6 {
     <div class="w3-col m6 w3-padding-large">
       <h1 class="w3-center">Audio Based Melody Generation Using MusicVAE</h1><br>
       <h5 class="w3-center">By Aaron Basch, Chris Carson, and Lucas Bastos</h5>
-      <p class="w3-large">One of the most frustrating situations that a music producer can run into is a creative block. Whether it just be trying to start a new project or build upon an established idea, a creative block can completely ruin your workflow and affect your inspiration for an extended period of time. This can be even worse for people who make music as their primary source of income. There are plenty of websites, programs, and plug-ins that will randomly generate melodies, but there are few, if any, that can pertain to style and emotions as well as take in an audio input to produce new, but similar, results. By creating this, we give users a more accurate result of what they are looking for than other programs. Also, by giving them MIDI files, they can easily be edited in any DAW so they are not stuck with the melody we provide. Doing this provides the producer with absolute freedom to do whatever they want with the melody. If implemented well, this could be a great tool to help music producers get inspired and get over their creative blocks.
+      <p class="w3-large">One of the most frustrating situations that a music producer can run into is a creative block. Whether it just be trying to start a new project or build upon an established idea, a creative block can completely ruin your workflow and affect your inspiration for an extended period of time. This can be even worse for people who make music as their primary source of income. There are plenty of websites, programs, and plug-ins that will randomly generate melodies, but there are few, if any, that can take in an audio input to produce new, but similar, results. By creating this, we give users a more accurate result of what they are looking for than other programs. Also, by giving them MIDI files, they can easily be edited in any DAW so they are not stuck with the melody we provide. Doing this provides the producer with absolute freedom to do whatever they want with the melody. If implemented well, this could be a great tool to help music producers get inspired and get over their creative blocks.
       </p>
       <p class="w3-large w3-text-grey w3-hide-medium"></p>
     </div>
@@ -59,26 +59,12 @@ h1, h2, h3, h4, h5, h6 {
     <div class="w3-col l6 w3-padding-large">
       <h1 class="w3-center">How It Works</h1><br>
       <h2>What You Give Us</h2><br>
-      <h4>Key</h4>
-      <p class="w3-text-grey">Choose the note and major or minor.</p><br>
-
-      <h4>Style</h4>
-      <p class="w3-text-grey">Choose a style of music from a list of selections.</p><br>
-
-      <h4>Time Signature</h4>
-      <p class="w3-text-grey">Choose the time signature for your midi files.</p><br>
-
-      <h4>Range of Notes</h4>
-      <p class="w3-text-grey">A range for the MIDI files to stay in.</p><br>
-
-      <h4>Length</h4>
-      <p class="w3-text-grey">How long your MIDI files will be.</p><br>
-
-      <h4>Emotional Content</h4>
-      <p class="w3-text-grey">The emotional content of the melodies produced.</p><br>
-
       <h4>Up to 5 Audio Files</h4>
       <p class="w3-text-grey">You can import up to 5 audio files to produce similar melodies to.</p><br>
+      <h2>And we take care of the rest<h2><br>
+      <p>Aaron's paragraph goes here</p><br>
+      <p>The melodies are passed as a JSON object to a seperate melody mixer JavaScript file. It is here that the melodies are mixed using MusicVAE and it's Interpolate function. The JSON object is parsed so that it fit's MusicVAE's format. They are then each mixed together one by one using the interpolate function. One of these interpolations is then selected randomly and is written into a MIDI file using JSMidi which is then made for the user to download.</p><br>
+      <p>Lucas's paragraph goes here</p>
     </div>
 
     <div class="w3-col l6 w3-padding-large">
