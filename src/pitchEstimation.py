@@ -19,6 +19,7 @@ import sys
 import librosa
 import numpy as np
 import pickle
+import json
 
 keyList = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 majorScale = [0,2,4,5,7,9,11]
@@ -180,7 +181,13 @@ def run(audioPath, midiFile : str = ''):
         midiFile = audioPath[:-4]+".mid"
     with open(midiFile, "wb") as output_file:
         midi_file.writeFile(output_file)
-
+    jsonDict = {}
+    for key in lengthDict:
+        newKey = str(key[0])+' '+str(key[1])
+        if lengthDict[key]!=None:
+            jsonDict[newKey] = lengthDict[key]
+    with open(audioPath[:-4]+".json", "w") as outfile:
+        json.dump(jsonDict, outfile)
     return lengthDict
 
 def main():
