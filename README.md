@@ -2,7 +2,8 @@
 
 ### Background
 Audio-Based Melody Generation is an end-to-end program written by Aaron Basch, Lucas Bastos, and Chris Carson for our IS-485/698 Machine Listening final project. The goal was to create a program that takes in one or more audio files in a .wav format and output a uniquely generated audio file that is inspired by the melodies and different styles. We do this by first converting each of the .wav files into .mid MIDI files, and using MusicVAE we blend the melodies into a final single audio track.
-![audioMixerGraph](audioMixerGraph.png)
+
+!(audioMixerGraph.png)
 
 ### Set up
 Our program can be used simply through the command line with the Python main.py program, or it can be deployed with a web interface by running the Node application via localhost. First, you must have git, Python 3, pip3, and Node.js installed. You can check if these are installed by running these commands:
