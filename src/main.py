@@ -19,30 +19,40 @@ import pitchEstimation
 import audio2midi
 import librosa
 import pypianoroll
+import json
+
 # from pitchEstimation import a2m
 midiPath = 'MIDI'
 arguments = len(sys.argv)
-if arguments == 1:
-    print("Command line arg missing: audio folder path, then midi folder path")
+if arguments <= 3:
+    print("Command line args missing: audio folder path, then midi folder path, then JSON file path")
     sys.exit()
-elif arguments > 1:
+else:
     audioFolder = sys.argv[1]
-    if arguments == 3:
-        midiPath = sys.argv[2]
-    else:
-        try:
-            os.mkdir(os.getcwd()+'/MIDI')
-        except OSError as error:
-            print(error)
-        print("Command line arg missing: midi path, creating MIDI directory if one doesn't exist")
+    midiPath = sys.argv[2]
+    jsonPath = sys.argv[3]
+        # try:
+        #     os.mkdir(os.getcwd()+'/MIDI')
+        # except OSError as error:
+        #     print(error)
+        # print("Command line arg missing: midi path, creating MIDI directory if one doesn't exist")
 
 # testAudioFolder = "TestAudio"
 audioPathList = []
 vocalPathFolder = "stems"
 
+with open(jsonPath) as json_file:
+    timeStampsDict = json.load(json_file)
 
 for fileName in os.listdir(audioFolder):
-    if fileName[-4:] == '.wav':
+    if fileName[-4:] == '.wav' and timeStampsDict.has_key(fileName):
+        start = timeStampsDict[fileName]['startTime']
+        end = timeStampsDict[fileName]['endTime']
+        y,sr = librosa.load(os.path.join(audioFolder, fileName))
+        newY = y[int(start*sr):int(end*sr)]
+
+        scipy.io.wavfile.write(os.path.join(audioFolder, fileName[:-4]+startTime+endTime)+'.wav', sr, newY)
+
         audioPathList.append(f"{audioFolder}/{fileName}")
         spleeterCommand = f"spleeter separate -o {vocalPathFolder} {' '.join(audioPathList)}"
 
