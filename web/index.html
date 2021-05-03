@@ -19,7 +19,7 @@
                             <a class="nav-link" href="https://github.com/lucaspbastos/Audio-Based-Melody-Generation">GitHub</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="https://github.com/lucaspbastos/Audio-Based-Melody-Generation#README">README</a>
+                            <a class="nav-link" href="https://github.com/lucaspbastos/Audio-Based-Melody-Generation#readme">README</a>
                         </li>
                     </ul>
                 </div>
@@ -29,7 +29,8 @@
             <form action="./upload" method="POST" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label for="formFileMultiple" class="form-label">Select one or more .wav audio files:</label>
-                    <input class="form-control" type="file" id="formFileMultiple" name="audioFiles" multiple>
+                    <input class="form-control" type="file" id="audio1" name="audioFiles" required>
+                    <input class="form-control" type="file" id="audio2" name="audioFiles" required>
                 </div>
                 <input type="submit" class="btn btn-primary" value="Submit Audio Files">
             </form>
