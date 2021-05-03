@@ -58,7 +58,18 @@ def freqToPitch(freq):
     n = h % 12
     return keyList[n] + str(octave)
 
-def audioToNotes(audioPath, division : int=64):
+def audioToNotes(audioPath, fileName, division : int=64):
+    '''
+    Convert a wav.file to a list of evenly spaced note estimations by taking the mode note value as determined by CREPE.
+
+    arguments:
+    audioPath : string of 8-bar isolated vocal
+    fileName : name of song
+    division : the amount of evenly spaced time divisions  (for 1/8 notes this would be 1/64 of the 8 bar segment)
+
+    returns:
+    list of size 64 of evenly spaced note estimations, either strings ('G#4') or None to represent rests (where the CREPE estimation had low confidence)
+    '''
     y, sr = librosa.core.load(audioPath)
     start = 0
     # minConfidence = .5
@@ -69,10 +80,10 @@ def audioToNotes(audioPath, division : int=64):
 
     # PICKLE HERE
     try:
-        time, frequency, confidence, activation = pickle.load(open(audioPath[:-4]+'.p', 'rb'))
+        time, frequency, confidence, activation = pickle.load(open('pickle/' + fileName + '.p', 'rb'))
     except:
         time, frequency, confidence, activation = crepe.predict(y, sr, viterbi=True,model_capacity='full')
-        pickle.dump((time,frequency, confidence, activation), open(audioPath[:-4]+'.p', 'wb'))
+        pickle.dump((time,frequency, confidence, activation), open('pickle/' + fileName + '.p', 'wb'))
 
     # division = 64
     amount = int(len(frequency)/division)
@@ -107,8 +118,18 @@ def audioToNotes(audioPath, division : int=64):
 
     return notes
 
-def notesToDict(audioPath):
-    eighthNotes = audioToNotes(audioPath, 64)
+def notesToDict(audioPath, fileName):
+    '''
+    converts list of notes to dictionary of time stamps in order to combine consecutive notes into longer notes and prepare the melody to be converted to JSON.
+
+    arguments:
+    audioPath : str audio path
+    fileName : str name of song
+
+    returns:
+    python dictionary in which keys are size 2 tuples of integers representing the start and end time (in 1/8 notes) and the values are string note names : { ..., (4,7):'A3', ... }
+    '''
+    eighthNotes = audioToNotes(audioPath, fileName, 64)
     # sixteenthNotes = audioToNotes(audioPath, 128)
 
     currentNote = eighthNotes[0]
@@ -157,8 +178,19 @@ def notesToDict(audioPath):
 
     return eighthLengthDict
 
-def run(audioPath, midiFile : str = ''):
-    lengthDict = notesToDict(audioPath)
+def run(audioPath, fileName, midiFile : str = ''):
+    '''
+    driver function which takes an audio file and converts it to a midiFile as well as a JSON file using the previous functions.
+
+    arguments:
+    audioPath : str : path to audio file
+    fileName : str : name of song
+    midiFile : str : path name of where the midi file should be saved
+
+    returns:
+    melody dictionary: keys are size 2 tuples of integers representing the start and end time (in 1/8 notes) and the values are string note names : { ..., (4,7):'A3', ... }
+    '''
+    lengthDict = notesToDict(audioPath, fileName)
     print(lengthDict)
 
     midi_file = MIDIFile(1)
@@ -181,12 +213,27 @@ def run(audioPath, midiFile : str = ''):
         midiFile = audioPath[:-4]+".mid"
     with open(midiFile, "wb") as output_file:
         midi_file.writeFile(output_file)
-    jsonDict = {}
+
+    jsonPath = "melodies.json"
+
+
+
+    with open(jsonPath) as json_file:
+        jsonDict = json.load(json_file)
+
+    if bool(jsonDict):
+        index = max([int(x) for x in jsonDict.keys()])+1
+    else:
+        index = 0
     for key in lengthDict:
-        newKey = str(key[0])+' '+str(key[1])
+        start = str(key[0])
+        end = str(key[1])
         if lengthDict[key]!=None:
-            jsonDict[newKey] = lengthDict[key]
-    with open(audioPath[:-4]+".json", "w") as outfile:
+            jsonDict[index] = { 'name': fileName, 'note' :lengthDict[key],'start' : int(start), 'end' : int(end) }
+        index += 1
+    # jsonDict[fileName] = currentDict
+
+    with open("melodies.json", "w") as outfile:
         json.dump(jsonDict, outfile)
     return lengthDict
 

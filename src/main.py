@@ -12,14 +12,31 @@ Requires audio2midi.py to be in same directory!!!
 edited https://github.com/tiagoft/audio_to_midi/blob/master/audio2midi.py
 '''
 
-import os
-import sys
-import time
-import pitchEstimation
-import audio2midi
+import os, shutil, sys
+import pitchEstimation, audio2midi
 import librosa
 import pypianoroll
 import json
+import scipy
+
+def directoryCleanUp(uploadsPath : str = 'uploads', stemsPath : str = 'stems', modelPath : str = 'pretrained_models', pyCachePath : str = '__pycache__', melodyJSON : str = 'melodies.json'):
+    '''
+    Empties various directories after the script runs, including the uploads, stems, spleeter pretrained_models
+    '''
+    pathList = [uploadsPath,stemsPath,modelPath,pyCachePath]
+    for path in pathList:
+        for file in os.listdir(path):
+            filePath = os.path.join(path, file)
+            try:
+                if os.path.isfile(filePath) or os.path.islink(filePath):
+                    os.unlink(filePath)
+                elif os.path.isdir(filePath):
+                    shutil.rmtree(filePath)
+            except Exception as error:
+                print(f'Failed to delete {filePath}. Reason: {error}')
+    os.rmdir(os.path.join(os.getcwd(),pyCachePath))
+    os.remove(os.path.join(os.getcwd(),melodyJSON))
+
 
 # from pitchEstimation import a2m
 midiPath = 'MIDI'
@@ -41,17 +58,22 @@ else:
 audioPathList = []
 vocalPathFolder = "stems"
 
-with open(jsonPath) as json_file:
-    timeStampsDict = json.load(json_file)
+# with open(jsonPath) as json_file:
+#     timeStampsDict = json.load(json_file)
+
+# TEST JSON:
+timeStampsDict = { 'hard.wav' : { 'startTime' : 0 , 'endTime' : 13 } , 'love.wav' : { 'startTime' : 0 , 'endTime' : 11 } }
 
 for fileName in os.listdir(audioFolder):
-    if fileName[-4:] == '.wav' and timeStampsDict.has_key(fileName):
+    fileName = fileName.lower()
+    print(fileName)
+    if fileName[-4:] == '.wav' and fileName in timeStampsDict:
         start = timeStampsDict[fileName]['startTime']
         end = timeStampsDict[fileName]['endTime']
         y,sr = librosa.load(os.path.join(audioFolder, fileName))
         newY = y[int(start*sr):int(end*sr)]
 
-        scipy.io.wavfile.write(os.path.join(audioFolder, fileName[:-4]+startTime+endTime)+'.wav', sr, newY)
+        scipy.io.wavfile.write(os.path.join(audioFolder, fileName[:-4]+str(start)+'_' + str(end))+'.wav', sr, newY)
 
         audioPathList.append(f"{audioFolder}/{fileName}")
         spleeterCommand = f"spleeter separate -o {vocalPathFolder} {' '.join(audioPathList)}"
@@ -61,13 +83,22 @@ os.system(spleeterCommand)
 if not os.path.exists(vocalPathFolder):
     print("spleeter failed")
 
+if not os.path.exists("melodies.json"):
+    emptyJSON = {}
+    with open("melodies.json", "w") as outfile:
+        json.dump(emptyJSON, outfile)
+
 for fileName in os.listdir(vocalPathFolder):
-    if os.path.isdir(os.path.join(vocalPathFolder, fileName)):
+    print(fileName)
+    if os.path.isdir(os.path.join(vocalPathFolder, fileName)) and fileName.lower()+'.wav' in timeStampsDict:
         midiFile = f"{midiPath}/{fileName}.mid"
         vocalFile = f"{vocalPathFolder}/{fileName}/vocals.wav"
-        pitchEstimation.run(vocalFile, midiFile)
+        pitchEstimation.run(vocalFile, fileName, midiFile)
         # audio2midi.run(vocalFile, midiFile[:-4]+"a2m.mid")
 
 melodyMixerFile = "melodyMixer.js"
-melodyJSON = "melodyTimeStamps.json"
+melodyJSON = "melodies.json"
+
 os.system(f"Node {melodyMixerFile} {melodyJSON}")
+
+directoryCleanUp(uploadsPath=audioFolder)
