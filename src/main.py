@@ -65,7 +65,7 @@ for fileName in os.listdir(vocalPathFolder):
     if os.path.isdir(os.path.join(vocalPathFolder, fileName)):
         midiFile = f"{midiPath}/{fileName}.mid"
         vocalFile = f"{vocalPathFolder}/{fileName}/vocals.wav"
-        pitchEstimation.run(vocalFile, midiFile)
+        pitchEstimation.run(vocalFile, fileName, midiFile)
         # audio2midi.run(vocalFile, midiFile[:-4]+"a2m.mid")
 
 melodyMixerFile = "melodyMixer.js"

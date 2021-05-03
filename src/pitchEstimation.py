@@ -157,7 +157,7 @@ def notesToDict(audioPath):
 
     return eighthLengthDict
 
-def run(audioPath, midiFile : str = ''):
+def run(audioPath, fileName, midiFile : str = ''):
     lengthDict = notesToDict(audioPath)
     print(lengthDict)
 
@@ -181,11 +181,19 @@ def run(audioPath, midiFile : str = ''):
         midiFile = audioPath[:-4]+".mid"
     with open(midiFile, "wb") as output_file:
         midi_file.writeFile(output_file)
-    jsonDict = {}
+
+    jsonPath = "melodies.json"
+
+    with open(jsonPath) as json_file:
+        jsonDict = json.load(json_file)
+
+    currentDict = {}
+
     for key in lengthDict:
         newKey = str(key[0])+' '+str(key[1])
         if lengthDict[key]!=None:
-            jsonDict[newKey] = lengthDict[key]
+            currentDict[newKey] = lengthDict[key]
+    jsonDict[fileName] = currentDict
     with open(audioPath[:-4]+".json", "w") as outfile:
         json.dump(jsonDict, outfile)
     return lengthDict
