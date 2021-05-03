@@ -88,9 +88,12 @@ if not os.path.exists("melodies.json"):
     with open("melodies.json", "w") as outfile:
         json.dump(emptyJSON, outfile)
 
+melodyMixture = []
+
 for fileName in os.listdir(vocalPathFolder):
     print(fileName)
     if os.path.isdir(os.path.join(vocalPathFolder, fileName)) and fileName.lower()+'.wav' in timeStampsDict:
+        melodyMixture.append(fileName)
         midiFile = f"{midiPath}/{fileName}.mid"
         vocalFile = f"{vocalPathFolder}/{fileName}/vocals.wav"
         pitchEstimation.run(vocalFile, fileName, midiFile)
@@ -100,5 +103,12 @@ melodyMixerFile = "melodyMixer.js"
 melodyJSON = "melodies.json"
 
 os.system(f"Node {melodyMixerFile} {melodyJSON}")
+
+if ord(melodyMixture[0][0]) < ord(melodyMixture[1][0]):
+    mixtureMidi = '_'.join(melodyMixture)+'.mid'
+else:
+    mixtureMidi = '_'.join([melodyMixture[1], melodyMixture[0]])+'.mid'
+
+print(mixtureMidi)
 
 directoryCleanUp(uploadsPath=audioFolder)
