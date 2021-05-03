@@ -184,17 +184,22 @@ def run(audioPath, fileName, midiFile : str = ''):
 
     jsonPath = "melodies.json"
 
+
+
     with open(jsonPath) as json_file:
         jsonDict = json.load(json_file)
 
-    currentDict = {}
-
+    currentDict = { }
+    index = 0
     for key in lengthDict:
-        newKey = str(key[0])+' '+str(key[1])
+        start = str(key[0])
+        end = str(key[1])
         if lengthDict[key]!=None:
-            currentDict[newKey] = lengthDict[key]
+            currentDict[index] = { lengthDict[key] : {'start' : int(start), 'end' : int(end) } }
+        index += 1
     jsonDict[fileName] = currentDict
-    with open(audioPath[:-4]+".json", "w") as outfile:
+
+    with open("melodies.json", "w") as outfile:
         json.dump(jsonDict, outfile)
     return lengthDict
 
