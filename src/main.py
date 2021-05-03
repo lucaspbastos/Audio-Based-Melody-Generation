@@ -20,6 +20,7 @@ import audio2midi
 import librosa
 import pypianoroll
 import json
+import scipy
 
 # from pitchEstimation import a2m
 midiPath = 'MIDI'
@@ -41,17 +42,22 @@ else:
 audioPathList = []
 vocalPathFolder = "stems"
 
-with open(jsonPath) as json_file:
-    timeStampsDict = json.load(json_file)
+# with open(jsonPath) as json_file:
+#     timeStampsDict = json.load(json_file)
+
+# TEST JSON:
+timeStampsDict = {'hard.wav':{'startTime':0, 'endTime':13}, 'love.wav':{'startTime':0, 'endTime':11}}
 
 for fileName in os.listdir(audioFolder):
-    if fileName[-4:] == '.wav' and timeStampsDict.has_key(fileName):
+    fileName = fileName.lower()
+    print(fileName)
+    if fileName[-4:] == '.wav' and fileName in timeStampsDict:
         start = timeStampsDict[fileName]['startTime']
         end = timeStampsDict[fileName]['endTime']
         y,sr = librosa.load(os.path.join(audioFolder, fileName))
         newY = y[int(start*sr):int(end*sr)]
 
-        scipy.io.wavfile.write(os.path.join(audioFolder, fileName[:-4]+startTime+endTime)+'.wav', sr, newY)
+        scipy.io.wavfile.write(os.path.join(audioFolder, fileName[:-4]+str(start)+'_' + str(end))+'.wav', sr, newY)
 
         audioPathList.append(f"{audioFolder}/{fileName}")
         spleeterCommand = f"spleeter separate -o {vocalPathFolder} {' '.join(audioPathList)}"
@@ -61,13 +67,21 @@ os.system(spleeterCommand)
 if not os.path.exists(vocalPathFolder):
     print("spleeter failed")
 
+if not os.path.exists("melodies.json"):
+    emptyJSON = {}
+    with open("melodies.json", "w") as outfile:
+        json.dump(emptyJSON, outfile)
+
 for fileName in os.listdir(vocalPathFolder):
     if os.path.isdir(os.path.join(vocalPathFolder, fileName)):
         midiFile = f"{midiPath}/{fileName}.mid"
         vocalFile = f"{vocalPathFolder}/{fileName}/vocals.wav"
-        pitchEstimation.run(vocalFile, midiFile)
+        pitchEstimation.run(vocalFile, fileName, midiFile)
         # audio2midi.run(vocalFile, midiFile[:-4]+"a2m.mid")
 
 melodyMixerFile = "melodyMixer.js"
-melodyJSON = "melodyTimeStamps.json"
+melodyJSON = "melodies.json"
+
+
+
 os.system(f"Node {melodyMixerFile} {melodyJSON}")
