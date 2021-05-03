@@ -205,16 +205,3 @@ function mousePressed() {
         loadingSpan.innerHTML = 'Pause';
     }
 }
-
-function drawNotes(notes, x, y, width, height) {
-    push();
-    translate(x, y);
-    var cellWidth = width / NUM_STEPS;
-    var cellHeight = height / NUM_NOTES;
-    notes.forEach(function(note) {
-        var emptyNoteSpacer = 1;
-        rect(emptyNoteSpacer + cellWidth * note.quantizedStartStep, height - cellHeight * (note.pitch-MIDI_START_NOTE),
-            cellWidth * (note.quantizedEndStep - note.quantizedStartStep) - emptyNoteSpacer, cellHeight);
-    });
-    pop();
-}
