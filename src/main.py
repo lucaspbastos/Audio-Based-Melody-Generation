@@ -12,15 +12,31 @@ Requires audio2midi.py to be in same directory!!!
 edited https://github.com/tiagoft/audio_to_midi/blob/master/audio2midi.py
 '''
 
-import os
-import sys
-import time
-import pitchEstimation
-import audio2midi
+import os, shutil, sys
+import pitchEstimation, audio2midi
 import librosa
 import pypianoroll
 import json
 import scipy
+
+def directoryCleanUp(uploadsPath : str = 'uploads', stemsPath : str = 'stems', modelPath : str = 'pretrained_models', pyCachePath : str = '__pycache__', melodyJSON : str = 'melodies.json'):
+    '''
+    Empties various directories after the script runs, including the uploads, stems, spleeter pretrained_models
+    '''
+    pathList = [uploadsPath,stemsPath,modelPath,pyCachePath]
+    for path in pathList:
+        for file in os.listdir(path):
+            filePath = os.path.join(path, file)
+            try:
+                if os.path.isfile(filePath) or os.path.islink(filePath):
+                    os.unlink(filePath)
+                elif os.path.isdir(filePath):
+                    shutil.rmtree(filePath)
+            except Exception as error:
+                print(f'Failed to delete {filePath}. Reason: {error}')
+    os.rmdir(os.path.join(os.getcwd(),pyCachePath))
+    os.remove(os.path.join(os.getcwd(),melodyJSON))
+
 
 # from pitchEstimation import a2m
 midiPath = 'MIDI'
@@ -46,7 +62,7 @@ vocalPathFolder = "stems"
 #     timeStampsDict = json.load(json_file)
 
 # TEST JSON:
-timeStampsDict = {'hard.wav':{'startTime':0, 'endTime':13}, 'love.wav':{'startTime':0, 'endTime':11}}
+timeStampsDict = { 'hard.wav' : { 'startTime' : 0 , 'endTime' : 13 } , 'love.wav' : { 'startTime' : 0 , 'endTime' : 11 } }
 
 for fileName in os.listdir(audioFolder):
     fileName = fileName.lower()
@@ -73,7 +89,8 @@ if not os.path.exists("melodies.json"):
         json.dump(emptyJSON, outfile)
 
 for fileName in os.listdir(vocalPathFolder):
-    if os.path.isdir(os.path.join(vocalPathFolder, fileName)):
+    print(fileName)
+    if os.path.isdir(os.path.join(vocalPathFolder, fileName)) and fileName.lower()+'.wav' in timeStampsDict:
         midiFile = f"{midiPath}/{fileName}.mid"
         vocalFile = f"{vocalPathFolder}/{fileName}/vocals.wav"
         pitchEstimation.run(vocalFile, fileName, midiFile)
@@ -82,6 +99,6 @@ for fileName in os.listdir(vocalPathFolder):
 melodyMixerFile = "melodyMixer.js"
 melodyJSON = "melodies.json"
 
-
-
 os.system(f"Node {melodyMixerFile} {melodyJSON}")
+
+directoryCleanUp(uploadsPath=audioFolder)
