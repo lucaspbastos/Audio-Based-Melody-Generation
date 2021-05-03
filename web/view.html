@@ -27,20 +27,46 @@
             </div>
         </nav>
         <div class="container">
-            <div id="waveform"></div>
-            <button class="btn btn-primary" id="restart"><i class='fa fa-play'></i> Play from Start</button>
-            <button class="btn btn-success" id="control"><i class='fa fa-play'></i> Play Selection</button><br><br>
-                <button class="btn btn-warning" id="continue"><i class="fa fa-arrow-circle-right"></i> Continue</button>
-            
+                <h2>'<%= filepath1 %>'</h2>
+                <div id="waveform1"></div>
+                <button class="btn btn-primary" id="restart1"><i class='fa fa-play'></i> Play from Start</button>
+                <button class="btn btn-success" id="control1"><i class='fa fa-play'></i> Play Selection</button><br><br>
+    
+                <h2>'<%= filepath2 %>'</h2>
+                <div id="waveform2"></div>
+                <button class="btn btn-primary" id="restart2"><i class='fa fa-play'></i> Play from Start</button>
+                <button class="btn btn-success" id="control2"><i class='fa fa-play'></i> Play Selection</button><br><br>
+                
+            <form action="./end" onsubmit="getTimes()" method="POST">
+                <input type="hidden" id="jsonValue" name="jsonValue" value="{}" display="block">
+                <button type="submit" class="btn btn-warning" id="continue2"><i class="fa fa-arrow-circle-right"></i> Continue</button>
+            </form>
         </div>
         <script src="https://unpkg.com/wavesurfer.js"></script>
         <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.regions.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>          
         <script>
-            var wavesurfer = WaveSurfer.create({
-                progressColor: 'purple',
-                container: '#waveform',
+            var wavesurfer1 = WaveSurfer.create({
+                progressColor: 'blue',
+                container: '#waveform1',
+                plugins: [
+                    WaveSurfer.regions.create({
+                        regions: [
+                            {
+                                id: 1,
+                                start: 1,
+                                end: 3,
+                                color: 'hsla(120, 100%, 50%, 0.3)'
+                            }
+                        ]
+                    })
+                ]
+            });
+
+            var wavesurfer2 = WaveSurfer.create({
+                progressColor: 'blue',
+                container: '#waveform2',
                 plugins: [
                     WaveSurfer.regions.create({
                         regions: [
@@ -55,40 +81,75 @@
                 ]
             });
         
-            if ('<%= filepath %>') {
-                document.getElementById("restart").addEventListener("click", restart);
-                document.getElementById("control").addEventListener("click", press);
-                wavesurfer.load('<%= filepath %>');
-                console.log(wavesurfer)
+            if ('<%= filepath1 %>' && '<%= filepath2 %>') {
+                wavesurfer1.load('<%= filepath1 %>');
+                wavesurfer2.load('<%= filepath2 %>');
+                document.getElementById("restart1").addEventListener("click", restart1);
+                document.getElementById("control1").addEventListener("click", press1);
+                document.getElementById("restart2").addEventListener("click", restart2);
+                document.getElementById("control2").addEventListener("click", press2);
             }
 
-            function restart() {
-                if (wavesurfer.isPlaying()) {
-                    document.getElementById("restart").innerHTML = "<i class='fa fa-play'></i> Play";
-                    document.getElementById("control").style.display = "inline";
-                    wavesurfer.pause();
+            function restart1() {
+                if (wavesurfer1.isPlaying()) {
+                    document.getElementById("restart1").innerHTML = "<i class='fa fa-play'></i> Play";
+                    document.getElementById("control1").style.display = "inline";
+                    wavesurfer1.pause();
                 } else {
-                    document.getElementById("restart").innerHTML = "<i class='fa fa-pause'></i> Pause";
-                    document.getElementById("control").style.display = "none";
-                    wavesurfer.play(0);
+                    document.getElementById("restart1").innerHTML = "<i class='fa fa-pause'></i> Pause";
+                    document.getElementById("control1").style.display = "none";
+                    wavesurfer1.play(0);
                 }
             }
 
-            function press() {
-                if (wavesurfer.isPlaying()) {
-                    document.getElementById("control").innerHTML = "<i class='fa fa-play'></i> Play Selection";
-                    document.getElementById("restart").style.display = "inline";
-                    wavesurfer.pause();
+            function restart2() {
+                if (wavesurfer2.isPlaying()) {
+                    document.getElementById("restart2").innerHTML = "<i class='fa fa-play'></i> Play";
+                    document.getElementById("control2").style.display = "inline";
+                    wavesurfer2.pause();
                 } else {
-                    document.getElementById("control").innerHTML = "<i class='fa fa-pause'></i> Pause";
-                    document.getElementById("restart").style.display = "none";
-                    wavesurfer.regions.list[1].playLoop();
+                    document.getElementById("restart2").innerHTML = "<i class='fa fa-pause'></i> Pause";
+                    document.getElementById("control2").style.display = "none";
+                    wavesurfer2.play(0);
+                }
+            }
+
+            function press1() {
+                if (wavesurfer1.isPlaying()) {
+                    document.getElementById("control1").innerHTML = "<i class='fa fa-play'></i> Play Selection";
+                    document.getElementById("restart1").style.display = "inline";
+                    wavesurfer1.pause();
+                } else {
+                    document.getElementById("control1").innerHTML = "<i class='fa fa-pause'></i> Pause";
+                    document.getElementById("restart1").style.display = "none";
+                    wavesurfer1.regions.list[1].playLoop();
+                }
+            }
+
+            function press2() {
+                if (wavesurfer2.isPlaying()) {
+                    document.getElementById("control2").innerHTML = "<i class='fa fa-play'></i> Play Selection";
+                    document.getElementById("restart2").style.display = "inline";
+                    wavesurfer2.pause();
+                } else {
+                    document.getElementById("control2").innerHTML = "<i class='fa fa-pause'></i> Pause";
+                    document.getElementById("restart2").style.display = "none";
+                    wavesurfer2.regions.list[1].playLoop();
                 }
             }
 
             function getTimes() {
-                let startTime = wavesurfer.regions.list[1].start;
-                let endTime = wavesurfer.regions.list[1].end;
+                let obj = {
+                    "<%= filepath1 %>": {
+                        "startTime1":wavesurfer1.regions.list[1].start,
+                        "endTime1":wavesurfer1.regions.list[1].end
+                    },
+                    "<%= filepath2 %>": {
+                        "startTime2":wavesurfer2.regions.list[1].start,
+                        "endTime2":wavesurfer2.regions.list[1].end
+                    }
+                };
+                document.getElementById("jsonValue").value = JSON.stringify(obj);
             }
         </script>
     </body>

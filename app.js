@@ -5,7 +5,8 @@ const formidable = require('formidable');
 const serveIndex = require('serve-index');
 const app = express();
 const path = require('path');
-const port = process.env.PORT || 3000;
+const bodyParser = require('body-parser');
+const port = process.env.PORT || 4000;
 app.engine('html', require('ejs').renderFile);
 
 if (!fs.existsSync('uploads/')){
@@ -14,6 +15,10 @@ if (!fs.existsSync('uploads/')){
 if (!fs.existsSync('outputs/')){
     fs.mkdirSync('outputs/');
 }
+
+app.use(bodyParser.urlencoded({
+    extended:true
+}));
 
 var storage = multer.diskStorage({
     destination: function (req, file, callback) {
@@ -34,7 +39,7 @@ var upload = multer({
             return callback(new Error('Only .wav audio files are supported.'));
         }
     }
-}).array('audioFiles',5);
+}).array('audioFiles',2);
 
 app.use(express.static(__dirname + "/"))
 app.use('/uploads', serveIndex(__dirname + '/uploads'));
@@ -54,11 +59,34 @@ app.post('/upload', function(req, res) {
             return res.end(""+err);
         }
         const spawn = require("child_process").spawn;
-        const pythonProcess = spawn('python3',["src/test_script.py", "uploads", "outputs"]);
+        const pythonProcess = spawn('python3',["src/getUploads.py", "uploads"]);
         pythonProcess.stdout.on('data', (data) => {
-            console.log("Melody mixing complete! File at "+data);
-            res.render(__dirname + '/web/view.html', {filepath:data.toString().replace( /[\r\n]+/gm, "")});
+            let d = JSON.parse(data)
+            res.render(__dirname + '/web/view.html', {filepath1:d[0], filepath2:d[1]});
         });
+    });
+});
+
+app.post('/end', function(req, res) {
+    const form = new formidable.IncomingForm();
+
+    form.parse(req, function(err, fields, files) {
+        if (err != null) {
+            console.log(err)
+            return res.status(400).json({ message: err.message });
+        }
+    });
+    fs.writeFile("src/times.json", req.body.jsonValue, (err) => {
+        if (err)
+            console.log(err);
+        else {
+            console.log("File written successfully");
+        }
+    });
+    const spawn = require("child_process").spawn;
+    const pythonProcess = spawn('python3',["src/main.py", "uploads", "outputs", "times.json"]);
+    pythonProcess.stdout.on('data', (data) => {
+        res.render(__dirname + '/web/download.html', {filepath:data});
     });
 });
 
