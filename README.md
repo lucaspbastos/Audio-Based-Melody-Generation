@@ -5,6 +5,7 @@ Instructor: Professor Mark Cartwright
 
 ### Background
 Audio-Based Melody Generation is an end-to-end program written by Aaron Basch, Lucas Bastos, and Chris Carson for our IS-485/698 Machine Listening final project. The goal was to create a program that takes in one or more audio files in a .wav format and output a uniquely generated audio file that is inspired by the melodies and different styles. We do this by first converting each of the .wav files into .mid MIDI files, and using MusicVAE we blend the melodies into a final single audio track.
+
 ![Graph Image](./AudioMixerGraph.png)
 _After a user provides two audio files, we extract the notes and convert them into MIDI format to then use as input for the melody mixer component._
 
