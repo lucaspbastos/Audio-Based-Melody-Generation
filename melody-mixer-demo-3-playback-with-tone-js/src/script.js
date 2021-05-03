@@ -12,8 +12,38 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+var fs require('fs');
 
+let jsonFile = process.argv[2];
+let rawdata = fs.readFileSync(jsonFile);
+let melodies = JSON.parse(rawdata);
+console.log(melodies);
 
+function writeMelodies(json) {
+  var melody1 = { notes: [] }
+  var melody2 = { notes: [] }
+  let name = json["0"]["name"];
+  for (let i = 0; i < Object.keys(json).length; i++) {
+    if (name === json[String(i)]["name"]) {
+      let note = melody1.notes[i];
+      let newStart = i + 1;
+      note.pitch = toMidi(json[String(i)]["note"]);
+      note.quantizedStartStep = json[String(i)]["start"];
+      note.quantizedEndStep = json[String(i)]["end"];
+    }
+    else {
+      note = melody2.notes[i-newStart];
+      note.pitch = toMidi(json[String(i)]["note"]);
+      note.quantizedStartStep = json[String(i)]["start"];
+      note.quantizedEndStep = json[String(i)]["end"];
+    }
+  }
+  return [melody1, melody2];
+}
+
+let newMelodies = writeMelodies(melodies);
+var melody1 = newMelodies[0];
+var melody2 = newMelodies[1];
 
 //Play with this to get back a larger or smaller blend of melodies
 var numInterpolations = 5; //numInterpolations containing 32 notes
@@ -90,6 +120,7 @@ var melodiesModelCheckPoint = 'https://storage.googleapis.com/download.magenta.t
 var NUM_STEPS = 32; // DO NOT CHANGE.
 var interpolatedNoteSequences;
 
+console.log(interpolatedNoteSequences);
 //Uses promises to chain together asynchronous operations.
 //Check out https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises for info on promises
 new musicvae.MusicVAE(melodiesModelCheckPoint)
@@ -97,111 +128,10 @@ new musicvae.MusicVAE(melodiesModelCheckPoint)
     .then(function(musicVAE) {
         //blends between the given two melodies and returns numInterpolations note sequences
         // MELODY1 = musicVAE.sample(1, 0.5)[0]; //generates 1 new melody with 0.5 temperature. More temp means crazier melodies
-        return musicVAE.interpolate([MELODY1, MELODY2], numInterpolations);
+        return musicVAE.interpolate([melody1, melody2], numInterpolations);
     })
     .then(function(noteSequences) {
         var text = 'Click to Play a blend from Melody 1 to Melody 2 in ' + numInterpolations + ' interpolations';
         document.querySelector('.loading').innerHTML = text;
         interpolatedNoteSequences = noteSequences;
     });
-
-///////////////////////////////
-//TONE.js setup for audio play back
-var samplesPath = 'https://storage.googleapis.com/melody-mixer/piano/';
-var samples = {};
-var NUM_NOTES = 88;
-var MIDI_START_NOTE = 21;
-for (var i = MIDI_START_NOTE; i < NUM_NOTES + MIDI_START_NOTE; i++) {
-  samples[i] = samplesPath + i + '.mp3';
-}
-
-var players = new Tone.Players(samples, function onPlayersLoaded(){
-    console.log("Tone.js players loaded");
-}).toMaster();
-
-
-function playNote(midiNote, numNoteHolds){
-    var duration = Tone.Transport.toSeconds('8n') * (numNoteHolds || 1);
-    var player = players.get(midiNote);
-    player.fadeOut = 0.05;
-    player.fadeIn = 0.01;
-    player.start(Tone.now(), 0, duration);
-}
-
-var sequenceIndex = -1;
-var stepIndex = -1;
-
-///////////////////////////////
-//p5.js setup
-var TILE_SIZE = 150;
-var WIDTH = TILE_SIZE * numInterpolations;
-var HEIGHT = 170;
-var START_COLOR;
-var END_COLOR;
-
-function setup() {
-    createCanvas(WIDTH , HEIGHT);
-    START_COLOR = color(60, 180, 203);
-    END_COLOR = color(233, 72, 88);
-    noStroke();
-}
-
-function draw() {
-    //here we calculate the percentage through melodies, between 0-1
-    var totalPlayTime = (Tone.Transport.bpm.value * NUM_STEPS * numInterpolations) / 1000;
-    var percent = Tone.Transport.seconds / totalPlayTime % 1;
-
-    //here we calculate the index of interpolatedNoteSequences
-    //and currStepIndex is the note between 0-31 of that playback
-    var currSequenceIndex = Math.floor(percent * numInterpolations);
-    var currStepIndex = Math.floor((percent * numInterpolations - currSequenceIndex) * NUM_STEPS);
-    function isCurrentStep(note) {
-        return note.quantizedStartStep === currStepIndex;
-    }
-    if(Tone.Transport.state === 'started') { //playback started
-        if(currStepIndex != stepIndex) {
-            //here we search through all notes and find any that match our current step index
-            var notes = interpolatedNoteSequences[currSequenceIndex].notes.filter(isCurrentStep);
-            notes.forEach(function(note) {
-                var noteDuration = note.quantizedEndStep - note.quantizedStartStep;
-                playNote(note.pitch, noteDuration);
-            });
-        }
-        sequenceIndex = currSequenceIndex;
-        stepIndex = currStepIndex;
-    }
-
-    //Draw Tiles + Notes
-    //Drawing Tiles + notes
-    background(38);
-    for(var i = 0; i < numInterpolations; i++){
-        var x = i * TILE_SIZE;
-        var y = HEIGHT-TILE_SIZE;
-        var currColor = lerpColor(START_COLOR, END_COLOR, i / numInterpolations);
-        //use currColor but at 50% opacity
-        fill(red(currColor), green(currColor), blue(currColor), 125);
-        rect(x, y, TILE_SIZE, TILE_SIZE);
-        fill(currColor);
-        if(interpolatedNoteSequences){
-            drawNotes(interpolatedNoteSequences[i].notes, x, y, TILE_SIZE, TILE_SIZE);
-        }
-
-    }
-    fill(255, 64);
-    rect(percent * WIDTH, 0, TILE_SIZE / NUM_STEPS, HEIGHT);
-    text(sequenceIndex + " - " + currStepIndex, 15, 15);
-}
-
-function mousePressed() {
-    if(!interpolatedNoteSequences) {
-        return;
-    }
-    var loadingSpan = document.querySelector('.loading');
-    if(Tone.Transport.state === 'started') {
-        Tone.Transport.stop();
-        loadingSpan.innerHTML = 'Play';
-    } else {
-        Tone.Transport.start();
-        loadingSpan.innerHTML = 'Pause';
-    }
-}
