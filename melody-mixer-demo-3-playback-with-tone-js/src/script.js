@@ -20,8 +20,8 @@ let melodies = JSON.parse(rawdata);
 console.log(melodies);
 
 function writeMelodies(json) {
-  var melody1 = { notes: [] }
-  var melody2 = { notes: [] }
+  var melody1 = { notes: [] };
+  var melody2 = { notes: [] };
   let name = json["0"]["name"];
   for (let i = 0; i < Object.keys(json).length; i++) {
     if (name === json[String(i)]["name"]) {
@@ -46,7 +46,7 @@ var melody1 = newMelodies[0];
 var melody2 = newMelodies[1];
 
 //Play with this to get back a larger or smaller blend of melodies
-var numInterpolations = 5; //numInterpolations containing 32 notes
+var numInterpolations = 8; //numInterpolations containing 32 notes
 
 // generates an array where indices correspond to midi notes
 var everyNote = 'C,C#,D,D#,E,F,F#,G,G#,A,A#,B,'.repeat(20).split(',').map( function(x,i) {
@@ -135,3 +135,6 @@ new musicvae.MusicVAE(melodiesModelCheckPoint)
         document.querySelector('.loading').innerHTML = text;
         interpolatedNoteSequences = noteSequences;
     });
+
+var pick = Math.floor((Math.random * (numInterpolations-1)) + 1);
+var pickedMelody = interpolatedNoteSequences[pick];
