@@ -23,7 +23,7 @@ def directoryCleanUp(uploadsPath : str = 'uploads', stemsPath : str = 'stems', m
     '''
     Empties various directories after the script runs, including the uploads, stems, spleeter pretrained_models
     '''
-    pathList = [uploadsPath,stemsPath,modelPath,pyCachePath]
+    pathList = [uploadsPath,stemsPath,modelPath,pyCachePath, 'tempMIDI', 'mixtures']
     for path in pathList:
         for file in os.listdir(path):
             filePath = os.path.join(path, file)
@@ -102,13 +102,45 @@ for fileName in os.listdir(vocalPathFolder):
 melodyMixerFile = "melodyMixer.js"
 melodyJSON = "melodies.json"
 
-os.system(f"Node {melodyMixerFile} {melodyJSON}")
-
 if ord(melodyMixture[0][0]) < ord(melodyMixture[1][0]):
     mixtureMidi = '_'.join(melodyMixture)+'.mid'
 else:
     mixtureMidi = '_'.join([melodyMixture[1], melodyMixture[0]])+'.mid'
 
+# os.system(f"Node {melodyMixerFile} {melodyJSON}")
+midiPathA = os.path.join(midiPath, melodyMixture[0] + '.mid')
+midiPathB = os.path.join(midiPath, melodyMixture[1] + '.mid')
+
+config = 'hierdec-mel_16bar'
+checkPointFile = 'hierdec-mel_16bar.tar'
+
+newMidi =[]
+
+musicVAECommandA = f'music_vae_generate --config={config} --checkpoint_file={checkPointFile} --mode=interpolate --num_outputs=1 --input_midi_1={midiPathA} --input_midi_2={midiPathA} --output_dir=tempMIDI'
+musicVAECommandB = f'music_vae_generate --config={config} --checkpoint_file={checkPointFile} --mode=interpolate --num_outputs=1 --input_midi_1={midiPathB} --input_midi_2={midiPathB} --output_dir=tempMIDI'
+os.system(musicVAECommandA)
+os.rename(os.path.join('tempMIDI', os.listdir('tempMIDI')[0]), "MIDI/midiSourceA.mid")
+
+for file in os.listdir('tempMIDI'):
+    filePath = os.path.join('tempMIDI', file)
+    os.remove(filePath)
+
+
+os.system(musicVAECommandB)
+os.rename(os.path.join('tempMIDI', os.listdir('tempMIDI')[0]), "MIDI/midiSourceB.mid")
+
+interpolateCommand = f'music_vae_generate --config={config} --checkpoint_file={checkPointFile} --mode=interpolate --num_outputs=5 --input_midi_1=MIDI/midiSourceA.mid --input_midi_2=MIDI/midiSourceB.mid --output_dir=mixtures'
+mixtureFile = ''
+
+for file in os.listdir('mixtures'):
+    if '003-of-005' in file:
+        mixtureFile = os.path.join('mixtures',file)
+        break
+
+os.system(interpolateCommand)
+
+os.rename(mixtureFile, os.path.join('finalMixture',mixtureMidi))
+
 print(mixtureMidi)
 
-directoryCleanUp(uploadsPath=audioFolder)
+directoryCleanUp()
