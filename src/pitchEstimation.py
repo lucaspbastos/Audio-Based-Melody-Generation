@@ -114,7 +114,9 @@ def audioToNotes(audioPath, fileName, division : int=64):
     KEY = KEY.asKey('major')
     print(KEY)
 
-    return notes*8
+
+
+    return notes
 
 def notesToDict(audioPath, fileName):
     '''
