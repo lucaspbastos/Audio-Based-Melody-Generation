@@ -141,12 +141,12 @@
             function getTimes() {
                 let obj = {
                     "<%= filepath1 %>": {
-                        "startTime1":wavesurfer1.regions.list[1].start,
-                        "endTime1":wavesurfer1.regions.list[1].end
+                        "startTime":wavesurfer1.regions.list[1].start,
+                        "endTime":wavesurfer1.regions.list[1].end
                     },
                     "<%= filepath2 %>": {
-                        "startTime2":wavesurfer2.regions.list[1].start,
-                        "endTime2":wavesurfer2.regions.list[1].end
+                        "startTime":wavesurfer2.regions.list[1].start,
+                        "endTime":wavesurfer2.regions.list[1].end
                     }
                 };
                 document.getElementById("jsonValue").value = JSON.stringify(obj);

@@ -12,7 +12,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 </style>
 <body>
-
+<script type='text/javascript' src='//www.midijs.net/lib/midi.js'></script>
 <!-- Navbar (sit on top) -->
 <div class="w3-top">
   <div class="w3-bar w3-white w3-padding w3-card" style="letter-spacing:4px;">
@@ -21,7 +21,7 @@ h1, h2, h3, h4, h5, h6 {
     <div class="w3-right w3-hide-small">
       <a href="#about" class="w3-bar-item w3-button">About</a>
       <a href="#menu" class="w3-bar-item w3-button">How It Works</a>
-      <a href="http://melodygeneration.herokuapp.com/" class="w3-bar-item w3-button">Demo</a>
+      <a href="#demo" class="w3-bar-item w3-button">Demo</a>
       <a href="https://github.com/lucaspbastos/Audio-Based-Melody-Generation" class="w3-bar-item w3-button">GitHub</a>
     </div>
   </div>
@@ -29,7 +29,7 @@ h1, h2, h3, h4, h5, h6 {
 
 <!-- Header -->
 <header class="w3-display-container w3-content w3-wide" style="max-width:1600px;min-width:500px" id="home">
-  <img class="w3-image" src="/w3images/hamburger.jpg" alt="Hamburger Catering" width="1600" height="800">
+  <img class="w3-image" src="../AudioMixerGraph.png" alt="Hamburger Catering" width="1600" height="800">
   <div class="w3-display-bottomleft w3-padding-large w3-opacity">
     <h1 class="w3-xxlarge">Le Catering</h1>
   </div>
@@ -41,7 +41,7 @@ h1, h2, h3, h4, h5, h6 {
   <!-- About Section -->
   <div class="w3-row w3-padding-64" id="about">
     <div class="w3-col m6 w3-padding-large w3-hide-small">
-     <img src="/w3images/tablesetting2.jpg" class="w3-round w3-image w3-opacity-min" alt="Table Setting" width="600" height="750">
+     <img src="../AudioMixerGraph.png" class="w3-round w3-image w3-opacity-min" alt="Table Setting" width="600" height="750">
     </div>
 
     <div class="w3-col m6 w3-padding-large">
@@ -60,14 +60,26 @@ h1, h2, h3, h4, h5, h6 {
     <div class="w3-col l6 w3-padding-large">
       <h1 class="w3-center">How It Works</h1><br>
       <h2>What You Give Us</h2><br>
-      <h4>Up to 5 Audio Files</h4>
-      <p class="w3-text-grey">You can import up to 5 audio files to produce similar melodies to.</p><br>
+      <h4>2 Audio Files</h4>
+      <p class="w3-text-grey">You can import 2 audio files to produce similar melodies to.</p><br>
       <h2>And the program takes care of the rest!<h2>
     </div>
   </div>
-  <p>Because our program is only as good as the input we feed it, a lot of focus was put on the audio-to-pianoroll function. The first attempt at solving this was to find a pre-existing solution and modify it to fit our specifications. After trying out a few programs from GitHub, we found one that seemed to most serve our purpose (https://github.com/tiagoft/audio_to_midi/blob/master/audio2midi.py). This program uses a Hidden Markov Model to predict note probabilities using librosa’s implementation of pYin pitch detection. While this worked well enough, there remained issues that we felt would hinder the effectiveness of the overall program; namely time and pitch. The resulting midi was unconstrained to any discernible time-grid, and pitch values were highly inaccurate. As a result, we decided to design our own audio-to-pianoroll function, which was simpler but much more effective at capturing the essence of the melody, as well as sticking to a predictable time-grid. This method essentially took the most frequent note estimated by a pertained CREPE model for each 1/8 note time division, while making the assumption that pitch estimations with a low average-confidence score are silent sections. This method makes one very important assumption about the audio input; the input start and stop times are the precise moments in which an 8 bar melody begins and ends. We felt this is an appropriate assumption since the program encourages the user to choose a specific segment, and since the melody-mixer model performs best with more “regular” melodies, this method hugely outperforms the known available methods. It should be noted that there was an additional attempt to detect the key of the song and adjust out-of-scale notes, but it was found to corrupt the many song choices users might have that do not fall into standard major/minor modes, so this was abandoned.</p><br>
-    <p>The melodies are passed as a JSON object to a seperate melody mixer JavaScript file. It is here that the melodies are mixed using MusicVAE and it's Interpolate function. The JSON object is parsed so that it fit's MusicVAE's format. They are then each mixed together one by one using the interpolate function. One of these interpolations is then selected randomly and is written into a MIDI file using JSMidi which is then made for the user to download.</p><br>
-    <p>This entire end-to-end program can then optionally be ran through a web interface with a clean and minimalistic user interface. This allows the user to use the program in a much simpler way by avoiding the command line. The web interface is ran using the Express framework and can be quickly deployed to a website or simply a localhost. The inner workings are quite simple, the initial page that a user finds themselves at requests an upload of audio tracks in .wav format to then upload into the system, where in the back end all of the magic happens with our program. In the end, the user will see their new audio track with the option to also download it.</p><br>
+  <p>Because our program is only as good as the input we feed it, a lot of focus was put on the audio-to-pianoroll function. The first attempt at solving this was to find a pre-existing solution and modify it to fit our specifications. After trying out a few programs from GitHub, we found one that seemed to most serve our purpose (https://github.com/tiagoft/audio_to_midi/blob/master/audio2midi.py). This program uses a Hidden Markov Model to predict note probabilities using librosa’s implementation of pYin pitch detection. While this worked well enough, there remained issues that we felt would hinder the effectiveness of the overall program; namely time and pitch. The resulting midi was unconstrained to any discernible time-grid, and pitch values were highly inaccurate. As a result, we decided to design our own audio-to-pianoroll function, which was simpler but much more effective at capturing the essence of the melody, as well as sticking to a predictable time-grid. This method essentially took the most frequent note estimated by a pertained CREPE model for each 1/8 note time division, while making the assumption that pitch estimations with a low average-confidence score are silent sections. This method makes one very important assumption about the audio input; the input start and stop times are the precise moments in which an 8 bar melody begins and ends. We felt this is an appropriate assumption since the program encourages the user to choose a specific segment, and since the melody-mixer model performs best with more “regular” melodies, this method hugely outperforms the known available methods. It should be noted that there was an additional attempt to detect the key of the song and adjust out-of-scale notes, but it was found to corrupt the many song choices users might have that do not fall into standard major/minor modes, so this was abandoned.
+  </p><br>
+  <p>The melodies are passed as a JSON object to a seperate melody mixer JavaScript file. It is here that the melodies are mixed using MusicVAE and it's Interpolate function. The JSON object is parsed so that it fit's MusicVAE's format. They are then each mixed together one by one using the interpolate function. One of these interpolations is then selected randomly and is written into a MIDI file using JSMidi which is then made for the user to download.</p><br>
+  <p>This entire end-to-end program can then optionally be ran through a web interface with a clean and minimalistic user interface. This allows the user to use the program in a much simpler way by avoiding the command line. The web interface is ran using the Express framework and can be quickly deployed to a website or simply a localhost. The inner workings are quite simple, the initial page that a user finds themselves at requests an upload of audio tracks in .wav format to then upload into the system, where in the back end all of the magic happens with our program. In the end, the user will see their new audio track with the option to also download it.</p><br>
+  <h2>Examples</h2>
+  <p>An example of two melodies with their MIDI extracted and then the mixture between them. All three are played with an in-browser MIDI player.</p> <br>
+  <p>Input A:</p>
+  <button class="btn btn-primary" id="play" onClick="MIDIjs.play('examples/inputA.mid');"><i class="fa fa-play"></i> Play </button> <br>
+  <p>Input B:</p>
+  <button class="btn btn-primary" id="play" onClick="MIDIjs.play('examples/inputB.mid');"><i class="fa fa-play"></i> Play </button> <br>
+  <p>Mixture:</p>
+  <button class="btn btn-primary" id="play" onClick="MIDIjs.play('examples/mixture.mid');"><i class="fa fa-play"></i> Play </button> <br>
+  <hr>
+  <h1 class="w3-center" id="demo">Try Our Demo!</h1><br>
+  <iframe src="http://melodygeneration.herokuapp.com/" height=800 width=1200></iframe>
   <hr>
 
 <!-- End page content -->

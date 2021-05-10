@@ -1,6 +1,8 @@
 # Audio-Based Melody Generation
 By: Aaron Basch, Lucas Bastos, and Chris Carson
+
 Course: IS 485/698 Machine Listening at New Jersey Insitute of Technology
+
 Instructor: Professor Mark Cartwright
 
 ### Background
@@ -25,10 +27,10 @@ If you see version numbers for all of the above, you're ready to move on! If not
 
 ### Run the Program
 - **Command Line**:
-In the base directory, you can run the main.py program by running `python3 src/main.py /INPUT_DIRECTORY [/OUTPUT_DIRECTORY]`, where _INPUT_DIRECTORY_ is a required parameter that specifies the directory containing the .wav files, and _OUTPUT_DIRECTORY_ is an optional parameter specifying the desired output directory for the final audio file. If no output directory is specified, the program defaults to /MIDI, and will create the directory if it does not exist.
+In the base directory, you can run the main.py program by running `python3 src/main.py /INPUT_DIRECTORY [/OUTPUT_DIRECTORY] [JSON_TIME_FILE]`, where _INPUT_DIRECTORY_ is a required parameter that specifies the directory containing the .wav files, and _OUTPUT_DIRECTORY_ is an optional parameter specifying the desired output directory for the final audio file, and _JSON_TIME_FILE_ is the JSON file containing the start and end times for the given audio files. If no output directory is specified, the program defaults to /MIDI, and will create the directory if it does not exist.
 
 - **Web Interface**:
-In the base directory, you can run `npm start` to start the web application at localhost:3000. You can specify a different port by exporting an environment variable named PORT to your desired port number. For example, in bash you would simply run `PORT=4000` to set the variable into the current shell, or `$PORT=4000` in PowerShell.
+In the base directory, you can run `npm start` to start the web application at localhost:4000. You can specify a different port by exporting an environment variable named PORT to your desired port number. For example, in bash you would simply run `PORT=4000` to set the variable into the current shell, or `$PORT=4000` in PowerShell.
 
 ### Demo without installing
 We have hosted an instance of our web application via Heroku for those who would like to demo the application before installing! You can access the website [here](https://melodygeneration.herokuapp.com/).
