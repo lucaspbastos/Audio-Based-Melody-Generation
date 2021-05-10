@@ -1,6 +1,8 @@
 # Audio-Based Melody Generation
 By: Aaron Basch, Lucas Bastos, and Chris Carson
+
 Course: IS 485/698 Machine Listening at New Jersey Insitute of Technology
+
 Instructor: Professor Mark Cartwright
 
 ### Background
