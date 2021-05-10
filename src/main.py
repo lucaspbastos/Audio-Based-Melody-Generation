@@ -106,6 +106,7 @@ if ord(melodyMixture[0][0]) < ord(melodyMixture[1][0]):
     mixtureMidi = '_'.join(melodyMixture)+'.mid'
 else:
     mixtureMidi = '_'.join([melodyMixture[1], melodyMixture[0]])+'.mid'
+<<<<<<< Updated upstream
 
 # os.system(f"Node {melodyMixerFile} {melodyJSON}")
 midiPathA = os.path.join(midiPath, melodyMixture[0] + '.mid')
@@ -144,3 +145,8 @@ os.rename(mixtureFile, os.path.join('finalMixture',mixtureMidi))
 print(mixtureMidi)
 
 directoryCleanUp()
+=======
+os.remove(jsonPath)
+print(mixtureMidi)
+directoryCleanUp(audioFolder)
+>>>>>>> Stashed changes
