@@ -134,3 +134,5 @@ src/times.json
 node_modules/
 uploads/*
 outputs/*
+.DS_Store
+.vscode/
