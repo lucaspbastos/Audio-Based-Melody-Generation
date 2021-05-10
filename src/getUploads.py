@@ -6,7 +6,7 @@ i=0
 
 if os.path.exists(input):
     for file in os.listdir(input):
-        files[i] = input+"/"+file
+        files[i] = file
         i+=1
     
 print(json.dumps(files))

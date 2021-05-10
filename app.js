@@ -83,7 +83,7 @@ app.post('/end', function(req, res) {
         }
     });
     const spawn = require("child_process").spawn;
-    const pythonProcess = spawn('python3',["src/main.py", "uploads", "outputs", "times.json"]);
+    const pythonProcess = spawn('python3',["src/main.py", "uploads", "outputs", "src/times.json"]);
     pythonProcess.stdout.on('data', (data) => {
         res.render(__dirname + '/web/download.html', {filepath:data});
     });
