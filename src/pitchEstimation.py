@@ -101,22 +101,21 @@ def audioToNotes(audioPath, fileName, division : int=64):
     for i in range(division):
         noteChunk = noteList[start:start+amount]
         start += amount
-        # if confidence > minConfidence:
+
 
         pitch = getMode(noteChunk)
         notes.append(pitch)
-        if pitch != None:
-            keyStream.append(note.Note(nameWithOctave=pitch))
-        # else:
-        #     notes.append(None)
-    # print(notes)
-    KEY = analysis.discrete.KrumhanslSchmuckler().getSolution(keyStream)
-    KEY = KEY.asKey('major')
-    print(KEY)
+    #     if pitch != None:
+    #         keyStream.append(note.Note(nameWithOctave=pitch))
+    #
+    #
+    # KEY = analysis.discrete.KrumhanslSchmuckler().getSolution(keyStream)
+    # KEY = KEY.asKey('major')
+    # print(KEY)
 
 
-
-    return notes
+    print(notes)
+    return notes*8
 
 def notesToDict(audioPath, fileName):
     '''
