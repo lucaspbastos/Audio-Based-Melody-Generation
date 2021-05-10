@@ -16,10 +16,6 @@ if (!fs.existsSync('outputs/')){
     fs.mkdirSync('outputs/');
 }
 
-app.use(bodyParser.urlencoded({
-    extended:true
-}));
-
 var storage = multer.diskStorage({
     destination: function (req, file, callback) {
         callback(null, './uploads');
@@ -44,6 +40,9 @@ var upload = multer({
 app.use(express.static(__dirname + "/"))
 app.use('/uploads', serveIndex(__dirname + '/uploads'));
 app.use('/outputs', serveIndex(__dirname + '/outputs'));
+app.use(bodyParser.urlencoded({
+    extended:true
+}));
 
 app.get('/info', function(req, res) {
     res.sendFile(path.join(__dirname + '/web/info.html'));
