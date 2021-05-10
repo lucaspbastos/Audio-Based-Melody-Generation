@@ -120,6 +120,7 @@ melodyMixerFile = "melodyMixer.js"
 melodyJSON = "melodies.json"
 
 
+<<<<<<< HEAD
 mixtureMidi = '_'.join([melodyMixture[1], melodyMixture[0]])+'.mid'
 
 # os.system(f"Node {melodyMixerFile} {melodyJSON}")
@@ -157,6 +158,13 @@ for file in os.listdir('mixtures'):
 
 os.rename(mixtureFile, os.path.join('finalMixture',mixtureMidi))
 
+=======
+if ord(melodyMixture[0][0]) < ord(melodyMixture[1][0]):
+    mixtureMidi = '_'.join(melodyMixture)+'.mid'
+else:
+    mixtureMidi = '_'.join([melodyMixture[1], melodyMixture[0]])+'.mid'
+os.remove(jsonPath) 
+>>>>>>> main
 print(mixtureMidi)
 
 directoryCleanUp(audioFolder)
