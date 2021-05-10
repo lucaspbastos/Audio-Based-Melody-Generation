@@ -130,6 +130,7 @@ dmypy.json
 
 
 */.DS_Store
+src/times.json
 node_modules/
 uploads/*
 outputs/*
